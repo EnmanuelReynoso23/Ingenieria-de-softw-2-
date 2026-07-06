@@ -113,6 +113,7 @@
             lblCode.Size = new Size(49, 15);
             lblCode.TabIndex = 28;
             lblCode.Text = "Código:";
+            lblCode.Click += lblCode_Click;
             // 
             // dgvInventory
             // 
