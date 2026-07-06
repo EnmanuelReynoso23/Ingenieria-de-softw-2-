@@ -1,8 +1,8 @@
 namespace InventoryApp;
 
-public partial class Form1 : Form
+public partial class inventarioForm : Form
 {
-    public Form1()
+    public inventarioForm()
     {
         InitializeComponent();
         SetupDataGridView();

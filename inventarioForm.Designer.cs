@@ -1,6 +1,6 @@
 namespace InventoryApp;
 
-partial class Form1
+partial class inventarioForm
 {
     private System.ComponentModel.IContainer components = null;
 
