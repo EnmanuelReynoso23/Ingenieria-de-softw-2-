@@ -91,5 +91,58 @@ namespace InventoryApp.DB
                 }
             }
         }
+
+
+        // Eliminar cliente
+        public void EliminarCliente(int id_cliente)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = "DELETE FROM clientes WHERE id_cliente = @id";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", id_cliente);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar el cliente: " + ex.Message);
+                }
+            }
+        }
+
+        // Actualizar cliente
+        public void ActualizarCliente(Client cliente)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    // Usamos UPDATE para cambiar los datos del registro que coincida con el id_cliente
+                    string sql = @"UPDATE clientes 
+                                   SET nombre = @nombre, rnc_cedula = @rnc, telefono = @telefono 
+                                   WHERE id_cliente = @id";
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", cliente.Id);
+                        cmd.Parameters.AddWithValue("nombre", cliente.Name ?? string.Empty);
+                        cmd.Parameters.AddWithValue("rnc", (object?)cliente.Rnc ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("telefono", (object?)cliente.Phone ?? DBNull.Value);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al actualizar el cliente: " + ex.Message);
+                }
+            }
+        }
     }
 }

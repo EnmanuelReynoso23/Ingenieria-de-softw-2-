@@ -62,6 +62,7 @@
             btnDeleteClient.TabIndex = 16;
             btnDeleteClient.Text = "Eliminar Cliente";
             btnDeleteClient.UseVisualStyleBackColor = true;
+            btnDeleteClient.Click += btnDeleteClient_Click_1;
             // 
             // btnEditClient
             // 
@@ -71,6 +72,7 @@
             btnEditClient.TabIndex = 17;
             btnEditClient.Text = "Editar Cliente";
             btnEditClient.UseVisualStyleBackColor = true;
+            btnEditClient.Click += btnEditClient_Click_1;
             // 
             // btnAddClient
             // 

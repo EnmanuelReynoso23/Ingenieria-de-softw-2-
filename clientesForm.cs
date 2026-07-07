@@ -58,6 +58,7 @@ namespace InventoryApp
 
         // --- FUNCIONALIDAD DE LOS BOTONES ---
 
+        // Botón Agregar Cliente
         private void btnAddClient_Click(object sender, EventArgs e)
         {
             try
@@ -90,7 +91,8 @@ namespace InventoryApp
             }
         }
 
-        /*private void btnEditClient_Click(object sender, EventArgs e)
+        //Botón Editar Cliente
+        private void btnEditClient_Click_1(object sender, EventArgs e)
         {
             try
             {
@@ -118,9 +120,11 @@ namespace InventoryApp
             {
                 MessageBox.Show("Error al actualizar el cliente: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }*/
+        }
 
-        /*private void btnDeleteClient_Click(object sender, EventArgs e)
+
+        //Botón Eliminar Cliente
+        private void btnDeleteClient_Click_1(object sender, EventArgs e)
         {
             try
             {
@@ -146,7 +150,7 @@ namespace InventoryApp
             {
                 MessageBox.Show("Error al eliminar el cliente: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }*/
+        }
 
         // --- SELECCIONAR DATOS DE LA TABLA ---
 
@@ -174,5 +178,7 @@ namespace InventoryApp
         private void textBoxRNC_TextChanged(object sender, EventArgs e) { }
         private void dgvInventory_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
         private void lblCode_Click(object sender, EventArgs e) { }
+
+
     }
 }
