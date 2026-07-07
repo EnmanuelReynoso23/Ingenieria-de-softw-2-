@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using InventoryApp.DB;
 
@@ -21,12 +22,12 @@ namespace InventoryApp
         {
             if (File.Exists(_archivoRecuerda))
             {
-                string usuarioGuardado = File.ReadAllText(_archivoRecuerda).Trim();
-                if (!string.IsNullOrEmpty(usuarioGuardado))
+                string[] lineas = File.ReadAllLines(_archivoRecuerda);
+                if (lineas.Length >= 2)
                 {
-                    txtUsuario.Text = usuarioGuardado;
+                    txtUsuario.Text = lineas[0];
+                    txtContraseña.Text = Encoding.UTF8.GetString(Convert.FromBase64String(lineas[1]));
                     ChkBRecordar.Checked = true;
-                    txtContraseña.Focus();
                 }
             }
         }
@@ -70,7 +71,7 @@ namespace InventoryApp
                 }
 
                 if (ChkBRecordar.Checked)
-                    GuardarUsuario(usuario);
+                    GuardarCredenciales(usuario, contrasena);
                 else
                     EliminarUsuarioGuardado();
 
@@ -93,14 +94,15 @@ namespace InventoryApp
             }
         }
 
-        private void GuardarUsuario(string nombreUsuario)
+        private void GuardarCredenciales(string nombreUsuario, string contrasena)
         {
             try
             {
                 string carpeta = Path.GetDirectoryName(_archivoRecuerda)!;
                 if (!Directory.Exists(carpeta))
                     Directory.CreateDirectory(carpeta);
-                File.WriteAllText(_archivoRecuerda, nombreUsuario);
+                string contrasenaB64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(contrasena));
+                File.WriteAllLines(_archivoRecuerda, new[] { nombreUsuario, contrasenaB64 });
             }
             catch { }
         }
