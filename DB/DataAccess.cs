@@ -13,6 +13,192 @@ namespace InventoryApp.DB
     {
         private ConexionDB dbConn = new ConexionDB();
 
+        // --- SECCIÓN DE USUARIOS / LOGIN ---
+
+        public UserEntity? ValidarUsuario(string nombreUsuario, string contrasena)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"SELECT u.id_usuario, u.nombre_completo, u.nombre_usuario,
+                                          u.id_rol, r.nombre_rol
+                                   FROM usuarios u
+                                   INNER JOIN roles r ON u.id_rol = r.id_rol
+                                   WHERE u.nombre_usuario = @usuario
+                                     AND u.contrasena_hash = @contrasena
+                                     AND u.activo = true";
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("usuario", nombreUsuario);
+                        cmd.Parameters.AddWithValue("contrasena", contrasena);
+
+                        using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new UserEntity
+                                {
+                                    Id = Convert.ToInt32(reader["id_usuario"]),
+                                    NombreCompleto = Convert.ToString(reader["nombre_completo"]) ?? string.Empty,
+                                    NombreUsuario = Convert.ToString(reader["nombre_usuario"]) ?? string.Empty,
+                                    IdRol = Convert.ToInt32(reader["id_rol"]),
+                                    NombreRol = Convert.ToString(reader["nombre_rol"]) ?? string.Empty
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al validar usuario: " + ex.Message);
+                }
+            }
+            return null;
+        }
+
+        // --- SECCIÓN DE USUARIOS ---
+
+        public List<UserEntity> ListarUsuarios()
+        {
+            List<UserEntity> lista = new List<UserEntity>();
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"SELECT u.id_usuario, u.nombre_completo, u.nombre_usuario,
+                                          u.id_rol, r.nombre_rol, u.activo, u.fecha_creacion
+                                   FROM usuarios u
+                                   INNER JOIN roles r ON u.id_rol = r.id_rol
+                                   ORDER BY u.id_usuario ASC";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new UserEntity
+                            {
+                                Id = Convert.ToInt32(reader["id_usuario"]),
+                                NombreCompleto = Convert.ToString(reader["nombre_completo"]) ?? string.Empty,
+                                NombreUsuario = Convert.ToString(reader["nombre_usuario"]) ?? string.Empty,
+                                IdRol = Convert.ToInt32(reader["id_rol"]),
+                                NombreRol = Convert.ToString(reader["nombre_rol"]) ?? string.Empty,
+                                Activo = Convert.ToBoolean(reader["activo"]),
+                                FechaCreacion = reader["fecha_creacion"] != DBNull.Value
+                                    ? Convert.ToDateTime(reader["fecha_creacion"]).ToString("dd/MM/yyyy HH:mm")
+                                    : "Sin fecha"
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al listar usuarios: " + ex.Message);
+                }
+            }
+            return lista;
+        }
+
+        public void AgregarUsuario(UserEntity usuario, string contrasena)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"INSERT INTO usuarios (nombre_completo, nombre_usuario, contrasena_hash, id_rol, activo)
+                                   VALUES (@nombre, @usuario, @contrasena, @rol, @activo)";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("nombre", usuario.NombreCompleto);
+                        cmd.Parameters.AddWithValue("usuario", usuario.NombreUsuario);
+                        cmd.Parameters.AddWithValue("contrasena", contrasena);
+                        cmd.Parameters.AddWithValue("rol", usuario.IdRol);
+                        cmd.Parameters.AddWithValue("activo", usuario.Activo);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al agregar usuario: " + ex.Message);
+                }
+            }
+        }
+
+        public void ActualizarUsuario(UserEntity usuario)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"UPDATE usuarios
+                                   SET nombre_completo = @nombre, nombre_usuario = @usuario,
+                                       id_rol = @rol, activo = @activo
+                                   WHERE id_usuario = @id";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", usuario.Id);
+                        cmd.Parameters.AddWithValue("nombre", usuario.NombreCompleto);
+                        cmd.Parameters.AddWithValue("usuario", usuario.NombreUsuario);
+                        cmd.Parameters.AddWithValue("rol", usuario.IdRol);
+                        cmd.Parameters.AddWithValue("activo", usuario.Activo);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al actualizar usuario: " + ex.Message);
+                }
+            }
+        }
+
+        public void CambiarContrasena(int idUsuario, string nuevaContrasena)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = "UPDATE usuarios SET contrasena_hash = @contrasena WHERE id_usuario = @id";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("contrasena", nuevaContrasena);
+                        cmd.Parameters.AddWithValue("id", idUsuario);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al cambiar contraseña: " + ex.Message);
+                }
+            }
+        }
+
+        public void DesactivarUsuario(int idUsuario)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = "UPDATE usuarios SET activo = false WHERE id_usuario = @id";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", idUsuario);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al desactivar usuario: " + ex.Message);
+                }
+            }
+        }
+
         // --- SECCIÓN DE CLIENTES ---
 
         // Listar todos los clientes
