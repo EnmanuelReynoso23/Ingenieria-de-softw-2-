@@ -241,14 +241,28 @@ namespace InventoryApp
                     page.DefaultTextStyle(x => x.FontSize(10));
 
                     // Cabecera del PDF
-                    page.Header().Column(col =>
+                    page.Header().PaddingBottom(15).Row(row =>
                     {
-                        col.Item().Text("InvenTotal").SemiBold().FontSize(16).FontColor(Colors.Blue.Darken2);
-                        col.Item().Text($"Factura #: {idFactura}").Bold();
-                        col.Item().Text($"Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}");
-                        col.Item().Text($"Cliente: {cliente.Name}");
-                        col.Item().Text($"RNC/Cédula: {cliente.Rnc}");
-                        col.Item().PaddingBottom(10);
+                        // 1. LADO IZQUIERDO (Los datos en texto)
+                        // RelativeItem() hace que el texto ocupe todo el espacio disponible a la izquierda
+                        row.RelativeItem().Column(col =>
+                        {
+                            col.Item().Text("InvenTotal").SemiBold().FontSize(16).FontColor(Colors.Blue.Darken2);
+                            col.Item().Text($"Factura #: {idFactura}").Bold();
+                            col.Item().Text($"Fecha: {DateTime.Now:dd/MM/yyyy HH:mm}");
+                            col.Item().Text($"Cliente: {cliente.Name}");
+                            col.Item().Text($"RNC/Cédula: {cliente.Rnc}");
+                        });
+
+                        // 2. LADO DERECHO (El Logo)
+                        string rutaLogo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images", "Logo InvenTotal.png");
+
+                        if (File.Exists(rutaLogo))
+                        {
+                            // ConstantItem(120) reserva exactamente 120 píxeles a la derecha para la foto
+                            // AlignRight() asegura que la imagen se pegue al margen derecho
+                            row.ConstantItem(120).AlignRight().Image(rutaLogo);
+                        }
                     });
 
                     // Tabla de productos
