@@ -62,7 +62,7 @@ namespace InventoryApp
 
         private void BtnInventario_Click(object sender, EventArgs e) => MostrarFormulario(new inventarioForm(), btnInventario);
         private void BtnClientes_Click(object sender, EventArgs e) => MostrarFormulario(new clientesForm(), btnClientes);
-        private void BtnFacturacion_Click(object sender, EventArgs e) => MostrarFormulario(new FacturacionForm(), btnFacturacion);
+        private void BtnFacturacion_Click(object sender, EventArgs e) => MostrarFormulario(new facturacionForm(), btnFacturacion);
         private void BtnUsuarios_Click(object sender, EventArgs e) => MostrarFormulario(new UsuariosForm(), btnUsuarios);
 
         private void BtnCerrarSesion_Click(object sender, EventArgs e)

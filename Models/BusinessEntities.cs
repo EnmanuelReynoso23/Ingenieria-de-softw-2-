@@ -24,7 +24,6 @@ namespace InventoryApp.Models
         public string FechaCreacion { get; set; } = string.Empty;
     }
 
-    // Faltaba la clase Product que usa tu DataAccess
     public class Product
     {
         public int Id { get; set; } // Este será tu nuevo "Código"
@@ -32,5 +31,25 @@ namespace InventoryApp.Models
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public string Date { get; set; } = string.Empty;
+    }
+
+    public class Factura
+    {
+        public int IdFactura { get; set; }
+        public int IdCliente { get; set; }
+        public int IdUsuario { get; set; }
+        public string RutaPdf { get; set; } = string.Empty;
+        public decimal Total { get; set; }
+    }
+
+    public class DetalleFactura
+    {
+        public int IdDetalle { get; set; }
+        public int IdFactura { get; set; }
+        public int IdProducto { get; set; }
+        public string NombreProducto { get; set; } = string.Empty; 
+        public int Cantidad { get; set; }
+        public decimal PrecioUnitario { get; set; }
+        public decimal Subtotal { get; set; }
     }
 }

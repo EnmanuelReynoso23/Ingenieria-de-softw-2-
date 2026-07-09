@@ -487,5 +487,101 @@ namespace InventoryApp.DB
                 }
             }
         }
+
+        // --- SECCIÓN DE FACTURACIÓN ---
+
+        // Método maestro: Guarda factura, detalles y descuenta stock todo en una sola transacción
+        public int ProcesarFacturaTransaccion(Factura factura, List<DetalleFactura> detalles)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                conn.Open();
+                // Iniciamos la transacción (Si algo falla, hacemos Rollback)
+                using (var tx = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Insertar la Cabecera de la Factura
+                        string sqlFactura = @"INSERT INTO facturas (id_cliente, id_usuario, fecha_emision, total, ruta_pdf)
+                                              VALUES (@cliente, @usuario, CURRENT_TIMESTAMP, @total, @ruta) RETURNING id_factura";
+
+                        int idFactura = 0;
+                        using (var cmdFactura = new NpgsqlCommand(sqlFactura, conn, tx))
+                        {
+                            cmdFactura.Parameters.AddWithValue("cliente", factura.IdCliente);
+                            cmdFactura.Parameters.AddWithValue("usuario", factura.IdUsuario);
+                            cmdFactura.Parameters.AddWithValue("total", factura.Total);
+                            cmdFactura.Parameters.AddWithValue("ruta", factura.RutaPdf ?? string.Empty);
+
+                            idFactura = Convert.ToInt32(cmdFactura.ExecuteScalar());
+                        }
+
+                        // 2. Procesar Detalles y Descontar Stock
+                        string sqlDetalle = @"INSERT INTO detalle_factura (id_factura, id_producto, cantidad, precio_unitario, subtotal)
+                                              VALUES (@factura, @producto, @cantidad, @precio, @subtotal)";
+
+                        string sqlRestarStock = @"UPDATE productos 
+                                                  SET stock = stock - @cantidad 
+                                                  WHERE id_producto = @producto AND stock >= @cantidad";
+
+                        foreach (var det in detalles)
+                        {
+                            // A) Intentar restar el stock primero (Validación de seguridad a nivel BD)
+                            using (var cmdStock = new NpgsqlCommand(sqlRestarStock, conn, tx))
+                            {
+                                cmdStock.Parameters.AddWithValue("cantidad", det.Cantidad);
+                                cmdStock.Parameters.AddWithValue("producto", det.IdProducto);
+
+                                int filasAfectadas = cmdStock.ExecuteNonQuery();
+                                // Si filasAfectadas es 0, significa que el stock actual es menor a la cantidad solicitada
+                                if (filasAfectadas == 0)
+                                {
+                                    throw new Exception($"Stock insuficiente en base de datos para el producto '{det.NombreProducto}'.");
+                                }
+                            }
+
+                            // B) Insertar el detalle de la factura
+                            using (var cmdDetalle = new NpgsqlCommand(sqlDetalle, conn, tx))
+                            {
+                                cmdDetalle.Parameters.AddWithValue("factura", idFactura);
+                                cmdDetalle.Parameters.AddWithValue("producto", det.IdProducto);
+                                cmdDetalle.Parameters.AddWithValue("cantidad", det.Cantidad);
+                                cmdDetalle.Parameters.AddWithValue("precio", det.PrecioUnitario);
+                                cmdDetalle.Parameters.AddWithValue("subtotal", det.Subtotal);
+                                cmdDetalle.ExecuteNonQuery();
+                            }
+                        }
+
+                        // 3. Si todo salió perfecto, confirmamos los cambios
+                        tx.Commit();
+                        return idFactura;
+                    }
+                    catch (Exception)
+                    {
+                        // Si hubo algún error (ej. falta de stock), revertimos todo lo hecho
+                        tx.Rollback();
+                        throw; // Pasamos el error al formulario para mostrarlo
+                    }
+                }
+            }
+        }
+
+        // Para guardar la ruta del PDF una vez generado
+        public void ActualizarRutaPdfFactura(int idFactura, string rutaPdf)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                conn.Open();
+                string sql = "UPDATE facturas SET ruta_pdf = @ruta WHERE id_factura = @id";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("ruta", rutaPdf);
+                    cmd.Parameters.AddWithValue("id", idFactura);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
     }
 }
