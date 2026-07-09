@@ -48,19 +48,17 @@
             // 
             clientesTitle.AutoSize = true;
             clientesTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            clientesTitle.Location = new Point(43, 33);
-            clientesTitle.Margin = new Padding(4, 0, 4, 0);
+            clientesTitle.Location = new Point(30, 20);
             clientesTitle.Name = "clientesTitle";
-            clientesTitle.Size = new Size(301, 45);
+            clientesTitle.Size = new Size(209, 30);
             clientesTitle.TabIndex = 14;
             clientesTitle.Text = "Gestión de clientes";
             // 
             // btnDeleteClient
             // 
-            btnDeleteClient.Location = new Point(43, 668);
-            btnDeleteClient.Margin = new Padding(4, 5, 4, 5);
+            btnDeleteClient.Location = new Point(30, 401);
             btnDeleteClient.Name = "btnDeleteClient";
-            btnDeleteClient.Size = new Size(357, 58);
+            btnDeleteClient.Size = new Size(250, 35);
             btnDeleteClient.TabIndex = 16;
             btnDeleteClient.Text = "Eliminar Cliente";
             btnDeleteClient.UseVisualStyleBackColor = true;
@@ -68,10 +66,9 @@
             // 
             // btnEditClient
             // 
-            btnEditClient.Location = new Point(43, 585);
-            btnEditClient.Margin = new Padding(4, 5, 4, 5);
+            btnEditClient.Location = new Point(30, 351);
             btnEditClient.Name = "btnEditClient";
-            btnEditClient.Size = new Size(357, 58);
+            btnEditClient.Size = new Size(250, 35);
             btnEditClient.TabIndex = 17;
             btnEditClient.Text = "Editar Cliente";
             btnEditClient.UseVisualStyleBackColor = true;
@@ -79,108 +76,99 @@
             // 
             // btnAddClient
             // 
-            btnAddClient.Location = new Point(43, 502);
-            btnAddClient.Margin = new Padding(4, 5, 4, 5);
+            btnAddClient.Location = new Point(30, 301);
             btnAddClient.Name = "btnAddClient";
-            btnAddClient.Size = new Size(357, 58);
+            btnAddClient.Size = new Size(250, 35);
             btnAddClient.TabIndex = 18;
             btnAddClient.Text = "Agregar Cliente";
             btnAddClient.UseVisualStyleBackColor = true;
             // 
             // txtName
             // 
-            txtName.Location = new Point(182, 193);
-            txtName.Margin = new Padding(4, 5, 4, 5);
+            txtName.Location = new Point(127, 116);
             txtName.Name = "txtName";
-            txtName.Size = new Size(218, 31);
+            txtName.Size = new Size(154, 23);
             txtName.TabIndex = 25;
             // 
             // lblName
             // 
             lblName.AutoSize = true;
-            lblName.Location = new Point(43, 196);
-            lblName.Margin = new Padding(4, 0, 4, 0);
+            lblName.Location = new Point(30, 118);
             lblName.Name = "lblName";
-            lblName.Size = new Size(82, 25);
+            lblName.Size = new Size(54, 15);
             lblName.TabIndex = 26;
             lblName.Text = "Nombre:";
             lblName.Click += lblName_Click;
             // 
             // txtCode
             // 
-            txtCode.Location = new Point(182, 112);
-            txtCode.Margin = new Padding(4, 5, 4, 5);
+            txtCode.Location = new Point(127, 67);
             txtCode.Name = "txtCode";
-            txtCode.Size = new Size(218, 31);
+            txtCode.Size = new Size(154, 23);
             txtCode.TabIndex = 27;
             // 
             // lblCode
             // 
             lblCode.AutoSize = true;
-            lblCode.Location = new Point(43, 117);
-            lblCode.Margin = new Padding(4, 0, 4, 0);
+            lblCode.Location = new Point(30, 70);
             lblCode.Name = "lblCode";
-            lblCode.Size = new Size(75, 25);
+            lblCode.Size = new Size(49, 15);
             lblCode.TabIndex = 28;
             lblCode.Text = "Código:";
             lblCode.Click += lblCode_Click;
             // 
             // dgvInventory
             // 
+            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvInventory.Location = new Point(440, 117);
-            dgvInventory.Margin = new Padding(4, 5, 4, 5);
+            dgvInventory.Location = new Point(308, 70);
             dgvInventory.Name = "dgvInventory";
             dgvInventory.RowHeadersWidth = 62;
-            dgvInventory.Size = new Size(929, 750);
+            dgvInventory.Size = new Size(650, 450);
             dgvInventory.TabIndex = 15;
             dgvInventory.CellContentClick += dgvInventory_CellContentClick;
             // 
             // textBoxRNC
             // 
-            textBoxRNC.Location = new Point(182, 271);
-            textBoxRNC.Margin = new Padding(4, 5, 4, 5);
+            textBoxRNC.Location = new Point(127, 163);
             textBoxRNC.Name = "textBoxRNC";
-            textBoxRNC.Size = new Size(218, 31);
+            textBoxRNC.Size = new Size(154, 23);
             textBoxRNC.TabIndex = 29;
             textBoxRNC.TextChanged += textBoxRNC_TextChanged;
             // 
             // labelRNC
             // 
             labelRNC.AutoSize = true;
-            labelRNC.Location = new Point(43, 277);
-            labelRNC.Margin = new Padding(4, 0, 4, 0);
+            labelRNC.Location = new Point(30, 166);
             labelRNC.Name = "labelRNC";
-            labelRNC.Size = new Size(112, 25);
+            labelRNC.Size = new Size(76, 15);
             labelRNC.TabIndex = 30;
             labelRNC.Text = "RNC/Cédula:";
             labelRNC.Click += labelRNC_Click;
             // 
             // textBoxPhone
             // 
-            textBoxPhone.Location = new Point(182, 348);
-            textBoxPhone.Margin = new Padding(4, 5, 4, 5);
+            textBoxPhone.Location = new Point(127, 209);
             textBoxPhone.Name = "textBoxPhone";
-            textBoxPhone.Size = new Size(218, 31);
+            textBoxPhone.Size = new Size(154, 23);
             textBoxPhone.TabIndex = 31;
             textBoxPhone.TextChanged += textBoxPhone_TextChanged;
             // 
             // labelPhone
             // 
             labelPhone.AutoSize = true;
-            labelPhone.Location = new Point(43, 351);
-            labelPhone.Margin = new Padding(4, 0, 4, 0);
+            labelPhone.Location = new Point(30, 211);
             labelPhone.Name = "labelPhone";
-            labelPhone.Size = new Size(83, 25);
+            labelPhone.Size = new Size(56, 15);
             labelPhone.TabIndex = 32;
             labelPhone.Text = "Teléfono:";
             labelPhone.Click += labelPhone_Click;
             // 
             // clientesForm
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1406, 935);
+            ClientSize = new Size(984, 561);
             Controls.Add(textBoxPhone);
             Controls.Add(labelPhone);
             Controls.Add(textBoxRNC);
@@ -194,7 +182,6 @@
             Controls.Add(txtCode);
             Controls.Add(lblCode);
             Controls.Add(dgvInventory);
-            Margin = new Padding(4, 5, 4, 5);
             Name = "clientesForm";
             Text = "Gestión de Clientes";
             Load += clientesForm_Load;

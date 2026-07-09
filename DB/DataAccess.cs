@@ -582,6 +582,111 @@ namespace InventoryApp.DB
             }
         }
 
+        // --- HISTORIAL DE FACTURAS ---
+        public List<FacturaHistorial> ListarHistorialFacturas()
+        {
+            List<FacturaHistorial> lista = new List<FacturaHistorial>();
+
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    // Hacemos JOIN para traer los nombres reales del cliente y del vendedor
+                    string sql = @"SELECT f.id_factura, c.nombre AS cliente, u.nombre_completo AS vendedor, 
+                                          f.fecha_emision, f.total, f.ruta_pdf 
+                                   FROM facturas f
+                                   INNER JOIN clientes c ON f.id_cliente = c.id_cliente
+                                   INNER JOIN usuarios u ON f.id_usuario = u.id_usuario
+                                   ORDER BY f.id_factura DESC"; // Ordenadas de la más nueva a la más vieja
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            object dbDate = reader["fecha_emision"];
+                            string fechaFormateada = "Sin fecha";
+
+                            if (dbDate != DBNull.Value && dbDate != null)
+                            {
+                                fechaFormateada = Convert.ToDateTime(dbDate).ToString("dd/MM/yyyy hh:mm tt");
+                            }
+
+                            lista.Add(new FacturaHistorial
+                            {
+                                IdFactura = Convert.ToInt32(reader["id_factura"]),
+                                Cliente = Convert.ToString(reader["cliente"]) ?? string.Empty,
+                                Vendedor = Convert.ToString(reader["vendedor"]) ?? string.Empty,
+                                Fecha = fechaFormateada,
+                                Total = reader["total"] != DBNull.Value ? Convert.ToDecimal(reader["total"]) : 0m,
+                                RutaPdf = Convert.ToString(reader["ruta_pdf"]) ?? string.Empty
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al listar el historial de facturas: " + ex.Message);
+                }
+            }
+            return lista;
+        }
+
+        // --- MÉTODOS PARA REGENERAR PDF DEL HISTORIAL ---
+
+        // Obtener el RNC del cliente que compró en esa factura
+        public string ObtenerRncClientePorFactura(int idFactura)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                conn.Open();
+                // Hacemos JOIN para llegar al RNC del cliente
+                string sql = @"SELECT c.rnc_cedula FROM facturas f 
+                               INNER JOIN clientes c ON f.id_cliente = c.id_cliente 
+                               WHERE f.id_factura = @id";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("id", idFactura);
+                    object result = cmd.ExecuteScalar();
+                    return result != null ? result.ToString() : "N/A";
+                }
+            }
+        }
+
+        // Obtener los productos exactos que se vendieron en esa factura
+        public List<DetalleFactura> ObtenerDetallesFactura(int idFactura)
+        {
+            List<DetalleFactura> detalles = new List<DetalleFactura>();
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                conn.Open();
+                string sql = @"SELECT d.id_producto, p.nombre AS nombre_producto, d.cantidad, d.precio_unitario, d.subtotal 
+                               FROM detalle_factura d
+                               INNER JOIN productos p ON d.id_producto = p.id_producto
+                               WHERE d.id_factura = @id";
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("id", idFactura);
+                    using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            detalles.Add(new DetalleFactura
+                            {
+                                IdProducto = Convert.ToInt32(reader["id_producto"]),
+                                NombreProducto = reader["nombre_producto"].ToString(),
+                                Cantidad = Convert.ToInt32(reader["cantidad"]),
+                                PrecioUnitario = Convert.ToDecimal(reader["precio_unitario"]),
+                                Subtotal = Convert.ToDecimal(reader["subtotal"])
+                            });
+                        }
+                    }
+                }
+            }
+            return detalles;
+        }
 
     }
 }

@@ -16,8 +16,9 @@ namespace InventoryApp
         private void InitializeComponent()
         {
             pnlSidebar = new Panel();
-            btnUsuarios = new Button();
             btnFacturacion = new Button();
+            btnHistorialFacturas = new Button();
+            btnUsuarios = new Button();
             btnInventario = new Button();
             btnClientes = new Button();
             pnlSeparador = new Panel();
@@ -33,6 +34,7 @@ namespace InventoryApp
             pnlSidebar.BackColor = Color.MistyRose;
             pnlSidebar.Controls.Add(btnUsuarios);
             pnlSidebar.Controls.Add(btnFacturacion);
+            pnlSidebar.Controls.Add(btnHistorialFacturas);
             pnlSidebar.Controls.Add(btnInventario);
             pnlSidebar.Controls.Add(btnClientes);
             pnlSidebar.Controls.Add(pnlSeparador);
@@ -41,26 +43,10 @@ namespace InventoryApp
             pnlSidebar.Controls.Add(btnCerrarSesion);
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.Location = new Point(0, 0);
+            pnlSidebar.Margin = new Padding(2);
             pnlSidebar.Name = "pnlSidebar";
-            pnlSidebar.Size = new Size(314, 944);
+            pnlSidebar.Size = new Size(220, 566);
             pnlSidebar.TabIndex = 0;
-            // 
-            // btnUsuarios
-            // 
-            btnUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            btnUsuarios.BackColor = Color.White;
-            btnUsuarios.Cursor = Cursors.Hand;
-            btnUsuarios.FlatAppearance.BorderSize = 0;
-            btnUsuarios.FlatStyle = FlatStyle.Popup;
-            btnUsuarios.Font = new Font("Segoe UI", 10F);
-            btnUsuarios.ForeColor = Color.Black;
-            btnUsuarios.Location = new Point(10, 475);
-            btnUsuarios.Name = "btnUsuarios";
-            btnUsuarios.Size = new Size(294, 84);
-            btnUsuarios.TabIndex = 4;
-            btnUsuarios.Text = "👥  Usuarios";
-            btnUsuarios.UseVisualStyleBackColor = false;
-            btnUsuarios.Click += BtnUsuarios_Click;
             // 
             // btnFacturacion
             // 
@@ -71,13 +57,50 @@ namespace InventoryApp
             btnFacturacion.FlatStyle = FlatStyle.Popup;
             btnFacturacion.Font = new Font("Segoe UI", 10F);
             btnFacturacion.ForeColor = Color.Black;
-            btnFacturacion.Location = new Point(10, 347);
+            btnFacturacion.Location = new Point(7, 286);
+            btnFacturacion.Margin = new Padding(2);
             btnFacturacion.Name = "btnFacturacion";
-            btnFacturacion.Size = new Size(294, 84);
+            btnFacturacion.Size = new Size(206, 50);
             btnFacturacion.TabIndex = 3;
             btnFacturacion.Text = "\U0001f9fe  Facturación";
             btnFacturacion.UseVisualStyleBackColor = false;
             btnFacturacion.Click += BtnFacturacion_Click;
+            // 
+            // btnHistorialFacturas
+            // 
+            btnHistorialFacturas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnHistorialFacturas.BackColor = Color.White;
+            btnHistorialFacturas.Cursor = Cursors.Hand;
+            btnHistorialFacturas.FlatAppearance.BorderSize = 0;
+            btnHistorialFacturas.FlatStyle = FlatStyle.Popup;
+            btnHistorialFacturas.Font = new Font("Segoe UI", 10F);
+            btnHistorialFacturas.ForeColor = Color.Black;
+            btnHistorialFacturas.Location = new Point(7, 355);
+            btnHistorialFacturas.Margin = new Padding(2);
+            btnHistorialFacturas.Name = "btnHistorialFacturas";
+            btnHistorialFacturas.Size = new Size(206, 50);
+            btnHistorialFacturas.TabIndex = 5;
+            btnHistorialFacturas.Text = "📄  Historial de Facturas";
+            btnHistorialFacturas.UseVisualStyleBackColor = false;
+            btnHistorialFacturas.Click += BtnHistorialFacturas_Click;
+            // 
+            // btnUsuarios
+            // 
+            btnUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnUsuarios.BackColor = Color.White;
+            btnUsuarios.Cursor = Cursors.Hand;
+            btnUsuarios.FlatAppearance.BorderSize = 0;
+            btnUsuarios.FlatStyle = FlatStyle.Popup;
+            btnUsuarios.Font = new Font("Segoe UI", 10F);
+            btnUsuarios.ForeColor = Color.Black;
+            btnUsuarios.Location = new Point(7, 209);
+            btnUsuarios.Margin = new Padding(2);
+            btnUsuarios.Name = "btnUsuarios";
+            btnUsuarios.Size = new Size(206, 50);
+            btnUsuarios.TabIndex = 4;
+            btnUsuarios.Text = "👥  Usuarios";
+            btnUsuarios.UseVisualStyleBackColor = false;
+            btnUsuarios.Click += BtnUsuarios_Click;
             // 
             // btnInventario
             // 
@@ -88,9 +111,10 @@ namespace InventoryApp
             btnInventario.FlatStyle = FlatStyle.Popup;
             btnInventario.Font = new Font("Segoe UI", 10F);
             btnInventario.ForeColor = Color.Black;
-            btnInventario.Location = new Point(12, 91);
+            btnInventario.Location = new Point(8, 55);
+            btnInventario.Margin = new Padding(2);
             btnInventario.Name = "btnInventario";
-            btnInventario.Size = new Size(292, 84);
+            btnInventario.Size = new Size(204, 50);
             btnInventario.TabIndex = 1;
             btnInventario.Text = "📦  Inventario";
             btnInventario.UseVisualStyleBackColor = false;
@@ -105,9 +129,10 @@ namespace InventoryApp
             btnClientes.FlatStyle = FlatStyle.Popup;
             btnClientes.Font = new Font("Segoe UI", 10F);
             btnClientes.ForeColor = Color.Black;
-            btnClientes.Location = new Point(12, 219);
+            btnClientes.Location = new Point(8, 131);
+            btnClientes.Margin = new Padding(2);
             btnClientes.Name = "btnClientes";
-            btnClientes.Size = new Size(292, 84);
+            btnClientes.Size = new Size(204, 50);
             btnClientes.TabIndex = 2;
             btnClientes.Text = "👤  Clientes";
             btnClientes.UseVisualStyleBackColor = false;
@@ -117,9 +142,10 @@ namespace InventoryApp
             // 
             pnlSeparador.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnlSeparador.BackColor = Color.Maroon;
-            pnlSeparador.Location = new Point(0, 832);
+            pnlSeparador.Location = new Point(0, 499);
+            pnlSeparador.Margin = new Padding(2);
             pnlSeparador.Name = "pnlSeparador";
-            pnlSeparador.Size = new Size(314, 10);
+            pnlSeparador.Size = new Size(220, 6);
             pnlSeparador.TabIndex = 5;
             // 
             // lblNombreUsuario
@@ -127,9 +153,10 @@ namespace InventoryApp
             lblNombreUsuario.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblNombreUsuario.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblNombreUsuario.ForeColor = Color.Black;
-            lblNombreUsuario.Location = new Point(10, 855);
+            lblNombreUsuario.Location = new Point(7, 513);
+            lblNombreUsuario.Margin = new Padding(2, 0, 2, 0);
             lblNombreUsuario.Name = "lblNombreUsuario";
-            lblNombreUsuario.Size = new Size(294, 28);
+            lblNombreUsuario.Size = new Size(206, 17);
             lblNombreUsuario.TabIndex = 6;
             lblNombreUsuario.Text = "Nombre Usuario";
             lblNombreUsuario.Click += lblNombreUsuario_Click;
@@ -139,9 +166,10 @@ namespace InventoryApp
             lblRolUsuario.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblRolUsuario.Font = new Font("Segoe UI", 8.5F);
             lblRolUsuario.ForeColor = Color.Black;
-            lblRolUsuario.Location = new Point(10, 898);
+            lblRolUsuario.Location = new Point(7, 539);
+            lblRolUsuario.Margin = new Padding(2, 0, 2, 0);
             lblRolUsuario.Name = "lblRolUsuario";
-            lblRolUsuario.Size = new Size(294, 22);
+            lblRolUsuario.Size = new Size(206, 13);
             lblRolUsuario.TabIndex = 7;
             lblRolUsuario.Text = "Rol";
             lblRolUsuario.Click += lblRolUsuario_Click;
@@ -155,9 +183,10 @@ namespace InventoryApp
             btnCerrarSesion.FlatStyle = FlatStyle.Popup;
             btnCerrarSesion.Font = new Font("Segoe UI", 9F);
             btnCerrarSesion.ForeColor = Color.FromArgb(64, 0, 0);
-            btnCerrarSesion.Location = new Point(10, 755);
+            btnCerrarSesion.Location = new Point(7, 453);
+            btnCerrarSesion.Margin = new Padding(2);
             btnCerrarSesion.Name = "btnCerrarSesion";
-            btnCerrarSesion.Size = new Size(292, 64);
+            btnCerrarSesion.Size = new Size(204, 38);
             btnCerrarSesion.TabIndex = 8;
             btnCerrarSesion.Text = "Cerrar Sesión";
             btnCerrarSesion.UseVisualStyleBackColor = false;
@@ -167,19 +196,22 @@ namespace InventoryApp
             // 
             pnlContenido.BackColor = Color.WhiteSmoke;
             pnlContenido.Dock = DockStyle.Fill;
-            pnlContenido.Location = new Point(314, 0);
+            pnlContenido.Location = new Point(220, 0);
+            pnlContenido.Margin = new Padding(2);
             pnlContenido.Name = "pnlContenido";
-            pnlContenido.Size = new Size(1470, 944);
+            pnlContenido.Size = new Size(1029, 566);
             pnlContenido.TabIndex = 1;
+            pnlContenido.Paint += pnlContenido_Paint;
             // 
             // DashboardForm
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1784, 944);
+            ClientSize = new Size(1249, 566);
             Controls.Add(pnlContenido);
             Controls.Add(pnlSidebar);
-            MinimumSize = new Size(900, 550);
+            Margin = new Padding(2);
+            MinimumSize = new Size(635, 346);
             Name = "DashboardForm";
             Text = "Sistema de Inventario y Ventas";
             WindowState = FormWindowState.Maximized;
@@ -197,6 +229,7 @@ namespace InventoryApp
         private Button btnClientes;
         private Button btnFacturacion;
         private Button btnUsuarios;
+        private Button btnHistorialFacturas;
         private Label lblNombreUsuario;
         private Label lblRolUsuario;
         private Button btnCerrarSesion;
