@@ -21,8 +21,6 @@ partial class inventarioForm
         txtCode = new TextBox();
         lblName = new Label();
         txtName = new TextBox();
-        lblCategory = new Label();
-        txtCategory = new TextBox();
         lblPrice = new Label();
         txtPrice = new TextBox();
         lblStock = new Label();
@@ -37,130 +35,99 @@ partial class inventarioForm
         // dgvInventory
         // 
         dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        dgvInventory.Location = new Point(440, 117);
-        dgvInventory.Margin = new Padding(4, 5, 4, 5);
+        dgvInventory.Location = new Point(308, 70);
         dgvInventory.Name = "dgvInventory";
         dgvInventory.RowHeadersWidth = 62;
-        dgvInventory.RowTemplate.Height = 25;
-        dgvInventory.Size = new Size(929, 750);
+        dgvInventory.Size = new Size(650, 450);
         dgvInventory.TabIndex = 0;
         // 
         // lblCode
         // 
         lblCode.AutoSize = true;
-        lblCode.Location = new Point(43, 115);
-        lblCode.Margin = new Padding(4, 0, 4, 0);
+        lblCode.Location = new Point(30, 69);
         lblCode.Name = "lblCode";
-        lblCode.Size = new Size(75, 25);
+        lblCode.Size = new Size(49, 15);
         lblCode.TabIndex = 13;
         lblCode.Text = "Código:";
         // 
         // txtCode
         // 
-        txtCode.Location = new Point(143, 112);
-        txtCode.Margin = new Padding(4, 5, 4, 5);
+        txtCode.Location = new Point(100, 67);
         txtCode.Name = "txtCode";
-        txtCode.Size = new Size(255, 31);
+        txtCode.Size = new Size(180, 23);
         txtCode.TabIndex = 12;
         // 
         // lblName
         // 
         lblName.AutoSize = true;
-        lblName.Location = new Point(43, 192);
-        lblName.Margin = new Padding(4, 0, 4, 0);
+        lblName.Location = new Point(30, 115);
         lblName.Name = "lblName";
-        lblName.Size = new Size(82, 25);
+        lblName.Size = new Size(54, 15);
         lblName.TabIndex = 11;
         lblName.Text = "Nombre:";
         // 
         // txtName
         // 
-        txtName.Location = new Point(143, 187);
-        txtName.Margin = new Padding(4, 5, 4, 5);
+        txtName.Location = new Point(100, 112);
         txtName.Name = "txtName";
-        txtName.Size = new Size(255, 31);
+        txtName.Size = new Size(180, 23);
         txtName.TabIndex = 10;
-        // 
-        // lblCategory
-        // 
-        lblCategory.AutoSize = true;
-        lblCategory.Location = new Point(43, 267);
-        lblCategory.Margin = new Padding(4, 0, 4, 0);
-        lblCategory.Name = "lblCategory";
-        lblCategory.Size = new Size(92, 25);
-        lblCategory.TabIndex = 9;
-        lblCategory.Text = "Categoría:";
-        // 
-        // txtCategory
-        // 
-        txtCategory.Location = new Point(143, 262);
-        txtCategory.Margin = new Padding(4, 5, 4, 5);
-        txtCategory.Name = "txtCategory";
-        txtCategory.Size = new Size(255, 31);
-        txtCategory.TabIndex = 8;
         // 
         // lblPrice
         // 
         lblPrice.AutoSize = true;
-        lblPrice.Location = new Point(43, 342);
-        lblPrice.Margin = new Padding(4, 0, 4, 0);
+        lblPrice.Location = new Point(30, 157);
         lblPrice.Name = "lblPrice";
-        lblPrice.Size = new Size(64, 25);
+        lblPrice.Size = new Size(43, 15);
         lblPrice.TabIndex = 7;
         lblPrice.Text = "Precio:";
         // 
         // txtPrice
         // 
-        txtPrice.Location = new Point(143, 337);
-        txtPrice.Margin = new Padding(4, 5, 4, 5);
+        txtPrice.Location = new Point(100, 154);
         txtPrice.Name = "txtPrice";
-        txtPrice.Size = new Size(255, 31);
+        txtPrice.Size = new Size(180, 23);
         txtPrice.TabIndex = 6;
         // 
         // lblStock
         // 
         lblStock.AutoSize = true;
-        lblStock.Location = new Point(43, 417);
-        lblStock.Margin = new Padding(4, 0, 4, 0);
+        lblStock.Location = new Point(30, 202);
         lblStock.Name = "lblStock";
-        lblStock.Size = new Size(59, 25);
+        lblStock.Size = new Size(39, 15);
         lblStock.TabIndex = 5;
         lblStock.Text = "Stock:";
         // 
         // txtStock
         // 
-        txtStock.Location = new Point(143, 412);
-        txtStock.Margin = new Padding(4, 5, 4, 5);
+        txtStock.Location = new Point(100, 199);
         txtStock.Name = "txtStock";
-        txtStock.Size = new Size(255, 31);
+        txtStock.Size = new Size(180, 23);
         txtStock.TabIndex = 4;
         // 
         // btnAdd
         // 
-        btnAdd.Location = new Point(43, 508);
-        btnAdd.Margin = new Padding(4, 5, 4, 5);
+        btnAdd.Location = new Point(30, 384);
         btnAdd.Name = "btnAdd";
-        btnAdd.Size = new Size(357, 58);
+        btnAdd.Size = new Size(250, 35);
         btnAdd.TabIndex = 3;
         btnAdd.Text = "Agregar al Inventario";
         btnAdd.UseVisualStyleBackColor = true;
         // 
         // btnEdit
         // 
-        btnEdit.Location = new Point(43, 592);
-        btnEdit.Margin = new Padding(4, 5, 4, 5);
+        btnEdit.Location = new Point(30, 434);
         btnEdit.Name = "btnEdit";
-        btnEdit.Size = new Size(357, 58);
+        btnEdit.Size = new Size(250, 35);
         btnEdit.TabIndex = 2;
         btnEdit.Text = "Editar Artículo";
         btnEdit.UseVisualStyleBackColor = true;
         // 
         // btnDelete
         // 
-        btnDelete.Location = new Point(43, 675);
-        btnDelete.Margin = new Padding(4, 5, 4, 5);
+        btnDelete.Location = new Point(30, 484);
         btnDelete.Name = "btnDelete";
-        btnDelete.Size = new Size(357, 58);
+        btnDelete.Size = new Size(250, 35);
         btnDelete.TabIndex = 1;
         btnDelete.Text = "Eliminar Artículo";
         btnDelete.UseVisualStyleBackColor = true;
@@ -169,18 +136,17 @@ partial class inventarioForm
         // 
         lblTitle.AutoSize = true;
         lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-        lblTitle.Location = new Point(43, 33);
-        lblTitle.Margin = new Padding(4, 0, 4, 0);
+        lblTitle.Location = new Point(30, 20);
         lblTitle.Name = "lblTitle";
-        lblTitle.Size = new Size(342, 45);
+        lblTitle.Size = new Size(236, 30);
         lblTitle.TabIndex = 0;
         lblTitle.Text = "Gestión de Inventario";
         // 
         // inventarioForm
         // 
-        AutoScaleDimensions = new SizeF(10F, 25F);
+        AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(1406, 935);
+        ClientSize = new Size(984, 561);
         Controls.Add(lblTitle);
         Controls.Add(btnDelete);
         Controls.Add(btnEdit);
@@ -189,14 +155,11 @@ partial class inventarioForm
         Controls.Add(lblStock);
         Controls.Add(txtPrice);
         Controls.Add(lblPrice);
-        Controls.Add(txtCategory);
-        Controls.Add(lblCategory);
         Controls.Add(txtName);
         Controls.Add(lblName);
         Controls.Add(txtCode);
         Controls.Add(lblCode);
         Controls.Add(dgvInventory);
-        Margin = new Padding(4, 5, 4, 5);
         Name = "inventarioForm";
         Text = "Sistema de Inventario";
         ((System.ComponentModel.ISupportInitialize)dgvInventory).EndInit();
@@ -210,8 +173,6 @@ partial class inventarioForm
     private System.Windows.Forms.TextBox txtCode;
     private System.Windows.Forms.Label lblName;
     private System.Windows.Forms.TextBox txtName;
-    private System.Windows.Forms.Label lblCategory;
-    private System.Windows.Forms.TextBox txtCategory;
     private System.Windows.Forms.Label lblPrice;
     private System.Windows.Forms.TextBox txtPrice;
     private System.Windows.Forms.Label lblStock;

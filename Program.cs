@@ -11,6 +11,6 @@ static class Program
         // Para personalizar la configuración de la aplicación, como establecer configuraciones de alto DPI o la fuente predeterminada,
         // visite https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
-        Application.Run(new LoginForm());
+        Application.Run(new inventarioForm());
     }    
 }

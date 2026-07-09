@@ -1,253 +1,228 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
-using Npgsql;
 using InventoryApp.DB;
+using InventoryApp.Models;
 
-namespace InventoryApp;
-
-public partial class inventarioForm : Form
+namespace InventoryApp
 {
-   
-    private readonly ConexionDB dbConn = new ConexionDB();
-
-
-    private int _idSeleccionado = 0;
-
-    public inventarioForm()
+    public partial class inventarioForm : Form
     {
-        InitializeComponent();
-        SetupDataGridView();
+        private readonly DataAccess dataAccess = new DataAccess();
+        private int _idSeleccionado = 0;
 
-       
-        this.Load += InventarioForm_Load;
-        this.btnAdd.Click += BtnAdd_Click;
-        this.btnEdit.Click += BtnEdit_Click;
-        this.btnDelete.Click += BtnDelete_Click;
-        this.dgvInventory.CellClick += DgvInventory_CellClick;
-    }
-
-    private void InventarioForm_Load(object? sender, EventArgs e)
-    {
-        CargarInventario();
-    }
-
-    private void SetupDataGridView()
-    {
-        dgvInventory.AutoGenerateColumns = true;
-        dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        dgvInventory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        dgvInventory.MultiSelect = false;
-        dgvInventory.AllowUserToAddRows = false;
-        dgvInventory.ReadOnly = true;
-    }
-
-  
-    private void CargarInventario()
-    {
-        try
+        public inventarioForm()
         {
-            using (NpgsqlConnection conn = dbConn.GetConnection())
+            InitializeComponent();
+            SetupDataGridView();
+
+            // Bloqueamos la caja de código porque el ID se genera solo en la BD
+            txtCode.ReadOnly = true;
+
+            this.Load += InventarioForm_Load;
+            this.btnAdd.Click += BtnAdd_Click;
+            this.btnEdit.Click += BtnEdit_Click;
+            this.btnDelete.Click += BtnDelete_Click;
+            this.dgvInventory.CellClick += DgvInventory_CellClick;
+        }
+
+        private void InventarioForm_Load(object? sender, EventArgs e)
+        {
+            CargarInventario();
+        }
+
+        private void SetupDataGridView()
+        {
+            dgvInventory.AutoGenerateColumns = true;
+            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvInventory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvInventory.MultiSelect = false;
+            dgvInventory.AllowUserToAddRows = false;
+            dgvInventory.ReadOnly = true;
+        }
+
+        private void CargarInventario()
+        {
+            try
             {
-                conn.Open();
-                string sql = @"SELECT id_producto AS Id, codigo AS Codigo, nombre AS Nombre,
-                                      categoria AS Categoria, precio AS Precio, stock AS Stock,
-                                      fecha_registro AS FechaRegistro
-                               FROM productos
-                               ORDER BY id_producto ASC";
-
-                using (var cmd = new NpgsqlCommand(sql, conn))
-                using (var adapter = new NpgsqlDataAdapter(cmd))
-                {
-                    var tabla = new DataTable();
-                    adapter.Fill(tabla);
-                    dgvInventory.DataSource = tabla;
-                }
+                List<Product> productos = dataAccess.ListarInventario();
+                dgvInventory.DataSource = productos;
+                RenombrarColumnas();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar el inventario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
+        private void RenombrarColumnas()
+        {
+            // Ponemos visible la columna Id y le cambiamos el nombre a "Código" visualmente
             if (dgvInventory.Columns["Id"] != null)
-                dgvInventory.Columns["Id"].Visible = false;
-
-            RenombrarColumnas();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Error al cargar el inventario: " + ex.Message, "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
-    private void RenombrarColumnas()
-    {
-        if (dgvInventory.Columns["Codigo"] != null) dgvInventory.Columns["Codigo"].HeaderText = "Código";
-        if (dgvInventory.Columns["Nombre"] != null) dgvInventory.Columns["Nombre"].HeaderText = "Nombre";
-        if (dgvInventory.Columns["Categoria"] != null) dgvInventory.Columns["Categoria"].HeaderText = "Categoría";
-        if (dgvInventory.Columns["Precio"] != null) dgvInventory.Columns["Precio"].HeaderText = "Precio";
-        if (dgvInventory.Columns["Stock"] != null) dgvInventory.Columns["Stock"].HeaderText = "Stock";
-        if (dgvInventory.Columns["FechaRegistro"] != null) dgvInventory.Columns["FechaRegistro"].HeaderText = "Fecha de Registro";
-    }
-
- 
-
-    private void DgvInventory_CellClick(object? sender, DataGridViewCellEventArgs e)
-    {
-        if (e.RowIndex < 0) return;
-
-        DataGridViewRow fila = dgvInventory.Rows[e.RowIndex];
-
-        _idSeleccionado = fila.Cells["Id"].Value != null
-            ? Convert.ToInt32(fila.Cells["Id"].Value)
-            : 0;
-
-        txtCode.Text = fila.Cells["Codigo"].Value?.ToString();
-        txtName.Text = fila.Cells["Nombre"].Value?.ToString();
-        txtCategory.Text = fila.Cells["Categoria"].Value?.ToString();
-        txtPrice.Text = fila.Cells["Precio"].Value != null
-            ? Convert.ToDecimal(fila.Cells["Precio"].Value).ToString("0.00", CultureInfo.InvariantCulture)
-            : string.Empty;
-        txtStock.Text = fila.Cells["Stock"].Value?.ToString();
-    }
-
-
-
-    private void BtnAdd_Click(object? sender, EventArgs e)
-    {
-        if (!ValidarCampos(out decimal precio, out int stock)) return;
-
-        try
-        {
-            if (ExisteCodigo(txtCode.Text.Trim(), 0))
             {
-                MessageBox.Show("Ya existe un artículo con ese código.", "Código duplicado",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtCode.Focus();
+                dgvInventory.Columns["Id"].Visible = true;
+                dgvInventory.Columns["Id"].HeaderText = "Código (ID)";
+            }
+
+            if (dgvInventory.Columns["Name"] != null) dgvInventory.Columns["Name"].HeaderText = "Nombre";
+            if (dgvInventory.Columns["Price"] != null) dgvInventory.Columns["Price"].HeaderText = "Precio";
+            if (dgvInventory.Columns["Stock"] != null) dgvInventory.Columns["Stock"].HeaderText = "Stock";
+            if (dgvInventory.Columns["Date"] != null) dgvInventory.Columns["Date"].HeaderText = "Fecha de Registro";
+        }
+
+        private void DgvInventory_CellClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow fila = dgvInventory.Rows[e.RowIndex];
+
+            _idSeleccionado = fila.Cells["Id"].Value != null ? Convert.ToInt32(fila.Cells["Id"].Value) : 0;
+
+            // Mostramos el ID en el TextBox del código
+            txtCode.Text = _idSeleccionado.ToString();
+            txtName.Text = fila.Cells["Name"].Value?.ToString();
+            txtPrice.Text = fila.Cells["Price"].Value != null
+                ? Convert.ToDecimal(fila.Cells["Price"].Value).ToString("0.00", CultureInfo.InvariantCulture)
+                : string.Empty;
+            txtStock.Text = fila.Cells["Stock"].Value?.ToString();
+        }
+
+        private void BtnAdd_Click(object? sender, EventArgs e)
+        {
+            if (!ValidarCampos(out decimal precio, out int stock)) return;
+
+            try
+            {
+                // Validación para que no metan dos artículos con el mismo nombre exacto
+                if (dataAccess.ExisteNombreProducto(txtName.Text.Trim(), 0))
+                {
+                    MessageBox.Show("Ya existe un artículo con ese nombre.", "Nombre duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtName.Focus();
+                    return;
+                }
+
+                Product nuevoProducto = new Product
+                {
+                    // No mandamos el Id/Código porque se asigna solo en PostgreSQL
+                    Name = txtName.Text.Trim(),
+                    Price = precio,
+                    Stock = stock
+                };
+
+                dataAccess.AgregarProducto(nuevoProducto);
+
+                MessageBox.Show("Artículo agregado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LimpiarCampos();
+                CargarInventario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al agregar el artículo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnEdit_Click(object? sender, EventArgs e)
+        {
+            if (_idSeleccionado <= 0)
+            {
+                MessageBox.Show("Seleccione un artículo de la lista para editar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (NpgsqlConnection conn = dbConn.GetConnection())
-            {
-                conn.Open();
-                string sql = @"INSERT INTO productos (codigo, nombre, categoria, precio, stock)
-                               VALUES (@codigo, @nombre, @categoria, @precio, @stock)";
+            if (!ValidarCampos(out decimal precio, out int stock)) return;
 
-                using (var cmd = new NpgsqlCommand(sql, conn))
+            try
+            {
+                if (dataAccess.ExisteNombreProducto(txtName.Text.Trim(), _idSeleccionado))
                 {
-                    cmd.Parameters.AddWithValue("codigo", txtCode.Text.Trim());
-                    cmd.Parameters.AddWithValue("nombre", txtName.Text.Trim());
-                    cmd.Parameters.AddWithValue("categoria", (object?)txtCategory.Text.Trim() ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("precio", precio);
-                    cmd.Parameters.AddWithValue("stock", stock);
-                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Ya existe otro artículo con ese nombre.", "Nombre duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtName.Focus();
+                    return;
                 }
+
+                Product productoEditado = new Product
+                {
+                    Id = _idSeleccionado,
+                    Name = txtName.Text.Trim(),
+                    Price = precio,
+                    Stock = stock
+                };
+
+                dataAccess.ActualizarProducto(productoEditado);
+
+                MessageBox.Show("Artículo actualizado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LimpiarCampos();
+                CargarInventario();
             }
-
-            MessageBox.Show("Artículo agregado exitosamente.", "Éxito",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LimpiarCampos();
-            CargarInventario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Error al agregar el artículo: " + ex.Message, "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
-   
-
-    private void BtnEdit_Click(object? sender, EventArgs e)
-    {
-        if (_idSeleccionado <= 0)
-        {
-            MessageBox.Show("Seleccione un artículo de la lista para editar.", "Advertencia",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        if (!ValidarCampos(out decimal precio, out int stock)) return;
-
-        try
-        {
-            if (ExisteCodigo(txtCode.Text.Trim(), _idSeleccionado))
+            catch (Exception ex)
             {
-                MessageBox.Show("Ya existe otro artículo con ese código.", "Código duplicado",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtCode.Focus();
+                MessageBox.Show("Error al actualizar el artículo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnDelete_Click(object? sender, EventArgs e)
+        {
+            if (_idSeleccionado <= 0)
+            {
+                MessageBox.Show("Seleccione un artículo de la lista para eliminar.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (NpgsqlConnection conn = dbConn.GetConnection())
-            {
-                conn.Open();
-                string sql = @"UPDATE productos
-                               SET codigo = @codigo, nombre = @nombre, categoria = @categoria,
-                                   precio = @precio, stock = @stock
-                               WHERE id_producto = @id";
+            DialogResult confirmacion = MessageBox.Show(
+                $"¿Está seguro de que desea eliminar el artículo \"{txtName.Text}\"?",
+                "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                using (var cmd = new NpgsqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("id", _idSeleccionado);
-                    cmd.Parameters.AddWithValue("codigo", txtCode.Text.Trim());
-                    cmd.Parameters.AddWithValue("nombre", txtName.Text.Trim());
-                    cmd.Parameters.AddWithValue("categoria", (object?)txtCategory.Text.Trim() ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("precio", precio);
-                    cmd.Parameters.AddWithValue("stock", stock);
-                    cmd.ExecuteNonQuery();
-                }
+            if (confirmacion != DialogResult.Yes) return;
+
+            try
+            {
+                dataAccess.EliminarProducto(_idSeleccionado);
+
+                MessageBox.Show("Artículo eliminado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LimpiarCampos();
+                CargarInventario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar el artículo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool ValidarCampos(out decimal precio, out int stock)
+        {
+            precio = 0;
+            stock = 0;
+
+            if (string.IsNullOrWhiteSpace(txtName.Text))
+            {
+                MessageBox.Show("El campo Nombre es obligatorio.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
 
-            MessageBox.Show("Artículo actualizado exitosamente.", "Éxito",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LimpiarCampos();
-            CargarInventario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Error al actualizar el artículo: " + ex.Message, "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
-    
-
-    private void BtnDelete_Click(object? sender, EventArgs e)
-    {
-        if (_idSeleccionado <= 0)
-        {
-            MessageBox.Show("Seleccione un artículo de la lista para eliminar.", "Advertencia",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        DialogResult confirmacion = MessageBox.Show(
-            $"¿Está seguro de que desea eliminar el artículo \"{txtName.Text}\"?",
-            "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-        if (confirmacion != DialogResult.Yes) return;
-
-        try
-        {
-            using (NpgsqlConnection conn = dbConn.GetConnection())
+            if (!decimal.TryParse(txtPrice.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out precio))
             {
-                conn.Open();
-                string sql = "DELETE FROM productos WHERE id_producto = @id";
-                using (var cmd = new NpgsqlCommand(sql, conn))
-                {
-                    cmd.Parameters.AddWithValue("id", _idSeleccionado);
-                    cmd.ExecuteNonQuery();
-                }
+                MessageBox.Show("El precio ingresado no es válido.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
 
-            MessageBox.Show("Artículo eliminado exitosamente.", "Éxito",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LimpiarCampos();
-            CargarInventario();
+            if (!int.TryParse(txtStock.Text, out stock))
+            {
+                MessageBox.Show("El stock ingresado no es válido.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
         }
-        catch (Exception ex)
+
+        private void LimpiarCampos()
         {
-            MessageBox.Show("Error al eliminar el artículo: " + ex.Message, "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            txtCode.Clear();
+            txtName.Clear();
+            // txtCategory.Clear(); <-- Borrar o comentar si ya lo eliminaste del form
+            txtPrice.Clear();
+            txtStock.Clear();
+            _idSeleccionado = 0;
         }
     }
-
+}

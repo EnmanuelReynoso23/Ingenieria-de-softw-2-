@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -219,7 +219,7 @@ namespace InventoryApp.DB
                         while (reader.Read())
                         {
                             object dbDate = reader["fecha_registro"];
-                            string fechaFormateada = "Sin fecha"; 
+                            string fechaFormateada = "Sin fecha";
 
                             if (dbDate != DBNull.Value && dbDate != null)
                             {
@@ -232,7 +232,7 @@ namespace InventoryApp.DB
                                 Name = Convert.ToString(reader["nombre"]) ?? string.Empty,
                                 Rnc = Convert.ToString(reader["rnc_cedula"]) ?? string.Empty,
                                 Phone = Convert.ToString(reader["telefono"]) ?? string.Empty,
-                                Date = fechaFormateada 
+                                Date = fechaFormateada
                             });
                         }
                     }
@@ -327,6 +327,163 @@ namespace InventoryApp.DB
                 catch (Exception ex)
                 {
                     throw new Exception("Error al actualizar el cliente: " + ex.Message);
+                }
+            }
+        }
+
+        // --- SECCIÓN DE INVENTARIO ---
+
+        // Listar todos los artículos del inventario
+        public List<Product> ListarInventario()
+        {
+            List<Product> lista = new List<Product>();
+
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"SELECT id_producto, nombre, precio, stock, fecha_registro
+                                   FROM productos
+                                   ORDER BY id_producto ASC";
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            object dbDate = reader["fecha_registro"];
+                            string fechaFormateada = "Sin fecha";
+
+                            if (dbDate != DBNull.Value && dbDate != null)
+                            {
+                                fechaFormateada = Convert.ToDateTime(dbDate).ToString("dd/MM/yyyy HH:mm");
+                            }
+
+                            lista.Add(new Product
+                            {
+                                Id = Convert.ToInt32(reader["id_producto"]),
+                                Name = Convert.ToString(reader["nombre"]) ?? string.Empty,
+                                Price = reader["precio"] != DBNull.Value ? Convert.ToDecimal(reader["precio"]) : 0m,
+                                Stock = reader["stock"] != DBNull.Value ? Convert.ToInt32(reader["stock"]) : 0,
+                                Date = fechaFormateada
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al listar el inventario: " + ex.Message);
+                }
+            }
+            return lista;
+        }
+
+        // Agregar nuevo artículo al inventario
+        public void AgregarProducto(Product producto)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"INSERT INTO productos (nombre, precio, stock)
+                                   VALUES (@nombre, @precio, @stock)
+                                   RETURNING id_producto";
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("nombre", producto.Name ?? string.Empty);
+                        cmd.Parameters.AddWithValue("precio", producto.Price);
+                        cmd.Parameters.AddWithValue("stock", producto.Stock);
+
+                        var result = cmd.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            producto.Id = Convert.ToInt32(result);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al agregar el artículo: " + ex.Message);
+                }
+            }
+        }
+
+        // Actualizar artículo existente
+        public void ActualizarProducto(Product producto)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"UPDATE productos
+                                   SET nombre = @nombre, precio = @precio, stock = @stock
+                                   WHERE id_producto = @id";
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", producto.Id);
+                        cmd.Parameters.AddWithValue("nombre", producto.Name ?? string.Empty);
+                        cmd.Parameters.AddWithValue("precio", producto.Price);
+                        cmd.Parameters.AddWithValue("stock", producto.Stock);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al actualizar el artículo: " + ex.Message);
+                }
+            }
+        }
+
+        // Eliminar artículo del inventario
+        public void EliminarProducto(int idProducto)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = "DELETE FROM productos WHERE id_producto = @id";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("id", idProducto);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar el artículo: " + ex.Message);
+                }
+            }
+        }
+
+        // Verificar si el NOMBRE ya existe (reemplaza la validación del código viejo)
+        public bool ExisteNombreProducto(string nombre, int idExcluir = 0)
+        {
+            using (NpgsqlConnection conn = dbConn.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = @"SELECT COUNT(*) FROM productos
+                                   WHERE LOWER(nombre) = LOWER(@nombre) AND id_producto <> @idExcluir";
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("nombre", nombre.Trim());
+                        cmd.Parameters.AddWithValue("idExcluir", idExcluir);
+                        long count = (long)(cmd.ExecuteScalar() ?? 0L);
+                        return count > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al verificar el nombre: " + ex.Message);
                 }
             }
         }
