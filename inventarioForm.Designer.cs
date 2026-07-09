@@ -35,99 +35,111 @@ partial class inventarioForm
         // dgvInventory
         // 
         dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        dgvInventory.Location = new Point(308, 70);
+        dgvInventory.Location = new Point(440, 117);
+        dgvInventory.Margin = new Padding(4, 5, 4, 5);
         dgvInventory.Name = "dgvInventory";
         dgvInventory.RowHeadersWidth = 62;
-        dgvInventory.Size = new Size(650, 450);
+        dgvInventory.Size = new Size(929, 750);
         dgvInventory.TabIndex = 0;
         // 
         // lblCode
         // 
         lblCode.AutoSize = true;
-        lblCode.Location = new Point(30, 69);
+        lblCode.Location = new Point(43, 115);
+        lblCode.Margin = new Padding(4, 0, 4, 0);
         lblCode.Name = "lblCode";
-        lblCode.Size = new Size(49, 15);
+        lblCode.Size = new Size(75, 25);
         lblCode.TabIndex = 13;
         lblCode.Text = "Código:";
         // 
         // txtCode
         // 
-        txtCode.Location = new Point(100, 67);
+        txtCode.Location = new Point(143, 112);
+        txtCode.Margin = new Padding(4, 5, 4, 5);
         txtCode.Name = "txtCode";
-        txtCode.Size = new Size(180, 23);
+        txtCode.Size = new Size(255, 31);
         txtCode.TabIndex = 12;
         // 
         // lblName
         // 
         lblName.AutoSize = true;
-        lblName.Location = new Point(30, 115);
+        lblName.Location = new Point(43, 192);
+        lblName.Margin = new Padding(4, 0, 4, 0);
         lblName.Name = "lblName";
-        lblName.Size = new Size(54, 15);
+        lblName.Size = new Size(82, 25);
         lblName.TabIndex = 11;
         lblName.Text = "Nombre:";
         // 
         // txtName
         // 
-        txtName.Location = new Point(100, 112);
+        txtName.Location = new Point(143, 187);
+        txtName.Margin = new Padding(4, 5, 4, 5);
         txtName.Name = "txtName";
-        txtName.Size = new Size(180, 23);
+        txtName.Size = new Size(255, 31);
         txtName.TabIndex = 10;
         // 
         // lblPrice
         // 
         lblPrice.AutoSize = true;
-        lblPrice.Location = new Point(30, 157);
+        lblPrice.Location = new Point(43, 262);
+        lblPrice.Margin = new Padding(4, 0, 4, 0);
         lblPrice.Name = "lblPrice";
-        lblPrice.Size = new Size(43, 15);
+        lblPrice.Size = new Size(64, 25);
         lblPrice.TabIndex = 7;
         lblPrice.Text = "Precio:";
         // 
         // txtPrice
         // 
-        txtPrice.Location = new Point(100, 154);
+        txtPrice.Location = new Point(143, 257);
+        txtPrice.Margin = new Padding(4, 5, 4, 5);
         txtPrice.Name = "txtPrice";
-        txtPrice.Size = new Size(180, 23);
+        txtPrice.Size = new Size(255, 31);
         txtPrice.TabIndex = 6;
         // 
         // lblStock
         // 
         lblStock.AutoSize = true;
-        lblStock.Location = new Point(30, 202);
+        lblStock.Location = new Point(43, 337);
+        lblStock.Margin = new Padding(4, 0, 4, 0);
         lblStock.Name = "lblStock";
-        lblStock.Size = new Size(39, 15);
+        lblStock.Size = new Size(59, 25);
         lblStock.TabIndex = 5;
         lblStock.Text = "Stock:";
         // 
         // txtStock
         // 
-        txtStock.Location = new Point(100, 199);
+        txtStock.Location = new Point(143, 332);
+        txtStock.Margin = new Padding(4, 5, 4, 5);
         txtStock.Name = "txtStock";
-        txtStock.Size = new Size(180, 23);
+        txtStock.Size = new Size(255, 31);
         txtStock.TabIndex = 4;
         // 
         // btnAdd
         // 
-        btnAdd.Location = new Point(30, 384);
+        btnAdd.Location = new Point(43, 640);
+        btnAdd.Margin = new Padding(4, 5, 4, 5);
         btnAdd.Name = "btnAdd";
-        btnAdd.Size = new Size(250, 35);
+        btnAdd.Size = new Size(357, 58);
         btnAdd.TabIndex = 3;
         btnAdd.Text = "Agregar al Inventario";
         btnAdd.UseVisualStyleBackColor = true;
         // 
         // btnEdit
         // 
-        btnEdit.Location = new Point(30, 434);
+        btnEdit.Location = new Point(43, 723);
+        btnEdit.Margin = new Padding(4, 5, 4, 5);
         btnEdit.Name = "btnEdit";
-        btnEdit.Size = new Size(250, 35);
+        btnEdit.Size = new Size(357, 58);
         btnEdit.TabIndex = 2;
         btnEdit.Text = "Editar Artículo";
         btnEdit.UseVisualStyleBackColor = true;
         // 
         // btnDelete
         // 
-        btnDelete.Location = new Point(30, 484);
+        btnDelete.Location = new Point(43, 807);
+        btnDelete.Margin = new Padding(4, 5, 4, 5);
         btnDelete.Name = "btnDelete";
-        btnDelete.Size = new Size(250, 35);
+        btnDelete.Size = new Size(357, 58);
         btnDelete.TabIndex = 1;
         btnDelete.Text = "Eliminar Artículo";
         btnDelete.UseVisualStyleBackColor = true;
@@ -136,17 +148,18 @@ partial class inventarioForm
         // 
         lblTitle.AutoSize = true;
         lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-        lblTitle.Location = new Point(30, 20);
+        lblTitle.Location = new Point(43, 33);
+        lblTitle.Margin = new Padding(4, 0, 4, 0);
         lblTitle.Name = "lblTitle";
-        lblTitle.Size = new Size(236, 30);
+        lblTitle.Size = new Size(342, 45);
         lblTitle.TabIndex = 0;
         lblTitle.Text = "Gestión de Inventario";
         // 
         // inventarioForm
         // 
-        AutoScaleDimensions = new SizeF(7F, 15F);
+        AutoScaleDimensions = new SizeF(10F, 25F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(984, 561);
+        ClientSize = new Size(1406, 935);
         Controls.Add(lblTitle);
         Controls.Add(btnDelete);
         Controls.Add(btnEdit);
@@ -160,6 +173,7 @@ partial class inventarioForm
         Controls.Add(txtCode);
         Controls.Add(lblCode);
         Controls.Add(dgvInventory);
+        Margin = new Padding(4, 5, 4, 5);
         Name = "inventarioForm";
         Text = "Sistema de Inventario";
         ((System.ComponentModel.ISupportInitialize)dgvInventory).EndInit();

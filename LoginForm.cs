@@ -77,7 +77,7 @@ namespace InventoryApp
 
                 Session.UsuarioActual = usuarioValido;
 
-                var formPrincipal = new inventarioForm();
+                var formPrincipal = new DashboardForm();
                 formPrincipal.Show();
                 this.Hide();
                 formPrincipal.FormClosed += (s, args) => this.Close();
