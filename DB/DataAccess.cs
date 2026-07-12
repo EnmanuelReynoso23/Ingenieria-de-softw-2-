@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Text;
+using BCrypt.Net;
 using Npgsql;
 using InventoryApp.Models;
 
@@ -23,22 +24,24 @@ namespace InventoryApp.DB
                 {
                     conn.Open();
                     string sql = @"SELECT u.id_usuario, u.nombre_completo, u.nombre_usuario,
-                                          u.id_rol, r.nombre_rol
+                                          u.contrasena_hash, u.id_rol, r.nombre_rol
                                    FROM usuarios u
                                    INNER JOIN roles r ON u.id_rol = r.id_rol
                                    WHERE u.nombre_usuario = @usuario
-                                     AND u.contrasena_hash = @contrasena
                                      AND u.activo = true";
 
                     using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("usuario", nombreUsuario);
-                        cmd.Parameters.AddWithValue("contrasena", contrasena);
 
                         using (NpgsqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
+                                string hash = Convert.ToString(reader["contrasena_hash"]) ?? string.Empty;
+                                if (!BCrypt.Net.BCrypt.Verify(contrasena, hash))
+                                    return null;
+
                                 return new UserEntity
                                 {
                                     Id = Convert.ToInt32(reader["id_usuario"]),
@@ -109,13 +112,14 @@ namespace InventoryApp.DB
                 try
                 {
                     conn.Open();
+                    string hash = BCrypt.Net.BCrypt.HashPassword(contrasena);
                     string sql = @"INSERT INTO usuarios (nombre_completo, nombre_usuario, contrasena_hash, id_rol, activo)
-                                   VALUES (@nombre, @usuario, @contrasena, @rol, @activo)";
+                                   VALUES (@nombre, @usuario, @hash, @rol, @activo)";
                     using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("nombre", usuario.NombreCompleto);
                         cmd.Parameters.AddWithValue("usuario", usuario.NombreUsuario);
-                        cmd.Parameters.AddWithValue("contrasena", contrasena);
+                        cmd.Parameters.AddWithValue("hash", hash);
                         cmd.Parameters.AddWithValue("rol", usuario.IdRol);
                         cmd.Parameters.AddWithValue("activo", usuario.Activo);
                         cmd.ExecuteNonQuery();
@@ -163,10 +167,11 @@ namespace InventoryApp.DB
                 try
                 {
                     conn.Open();
-                    string sql = "UPDATE usuarios SET contrasena_hash = @contrasena WHERE id_usuario = @id";
+                    string hash = BCrypt.Net.BCrypt.HashPassword(nuevaContrasena);
+                    string sql = "UPDATE usuarios SET contrasena_hash = @hash WHERE id_usuario = @id";
                     using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddWithValue("contrasena", nuevaContrasena);
+                        cmd.Parameters.AddWithValue("hash", hash);
                         cmd.Parameters.AddWithValue("id", idUsuario);
                         cmd.ExecuteNonQuery();
                     }
